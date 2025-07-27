@@ -10,3 +10,12 @@ rapid iteration.
 - Serve as a playground for future improvements.
 
 More documentation will be added as the codebase evolves.
+
+## Developer Tools
+
+Phase 4 introduces helper utilities:
+
+- **plumbaggage** — inspect messages and see matching rules.
+- **plumbtest** — integration test runner.
+
+Use `--trace` or `--explain` with the main CLI for debugging.
