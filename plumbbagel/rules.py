@@ -24,6 +24,7 @@ class RuleSet:
 
     @classmethod
     def from_file(cls, path: str) -> "RuleSet":
-        data = json.load(open(path))
+        with open(path) as fh:
+            data = json.load(fh)
         rules = [Rule(**r) for r in data.get("rules", [])]
         return cls(rules)
