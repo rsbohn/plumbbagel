@@ -1,0 +1,6 @@
+{
+  "rules": [
+    {"name": "hello", "match": {"cmd": "hello"}, "action": "echo Hello"},
+    {"name": "bye", "match": {"cmd": "bye"}, "action": "echo Bye"}
+  ]
+}
