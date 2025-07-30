@@ -1,1 +1,14 @@
-{}
+{
+    "rules":[
+  {
+    "name": "fish rule",
+    "match": {"text":"fish"},
+    "action": "red"
+  },
+  {
+    "name": "otherwise",
+    "match": {"text":"*"},
+    "action": "blue"
+  }
+]
+}

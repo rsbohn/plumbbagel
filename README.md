@@ -19,3 +19,7 @@ Phase 4 introduces helper utilities:
 - **plumbtest** — integration test runner.
 
 Use `--trace` or `--explain` with the main CLI for debugging.
+
+## Authors
+
+Randall Bohn <rsbohn@gmail.com>

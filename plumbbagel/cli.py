@@ -28,12 +28,13 @@ def main(args: List[str] = None) -> int:
 
     if parsed.message:
         if '=' in parsed.message or not os.path.exists(parsed.message):
-            lines = [parsed.message]
+            # Wrap the message as a dict for matching rules expecting {"text": ...}
+            lines = [{"text": parsed.message.strip()}]
         else:
             with open(parsed.message) as fh:
-                lines = fh.readlines()
+                lines = [ {"text": line.strip()} for line in fh if line.strip() ]
     else:
-        lines = [line for line in open(0)]
+        lines = [ {"text": line.strip()} for line in open(0) if line.strip() ]
 
     engine.process(lines)
     return 0

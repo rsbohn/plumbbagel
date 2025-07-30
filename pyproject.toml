@@ -1,0 +1,16 @@
+[project]
+name = "plumbbagel"
+version = "0.1.0"
+description = "A simple rules engine prototype."
+authors = [
+    { name = "Randall Bohn", email = "rsbohn@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = []
+
+[tool.uv]
+# Add uv-specific configuration here if needed
+
+[tool.setuptools]
+packages = ["plumbbagel"]
