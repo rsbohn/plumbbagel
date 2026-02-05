@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 from typing import List
 
@@ -15,6 +16,7 @@ def main(args: List[str] = None) -> int:
     parser.add_argument("--explain", action="store_true", help="Explain rule evaluation")
     parser.add_argument("--trace", action="store_true", help="Trace each rule check")
     parser.add_argument("--highlight", action="store_true", help="Highlight matches (no-op)")
+    parser.add_argument("--json", action="store_true", help="Output in JSON format")
     parsed = parser.parse_args(args)
 
     rules = RuleSet.from_file(parsed.rules)
@@ -24,6 +26,7 @@ def main(args: List[str] = None) -> int:
         verbose=parsed.verbose,
         trace=parsed.trace,
         explain=parsed.explain,
+        json_output=parsed.json,
     )
 
     if parsed.message:

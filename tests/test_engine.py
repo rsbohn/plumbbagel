@@ -1,6 +1,7 @@
 import unittest
 from io import StringIO
 import sys
+import json
 from plumbbagel.engine import Engine
 from plumbbagel.rules import RuleSet, Rule
 from plumbbagel.message import Message
@@ -92,6 +93,30 @@ class EngineTests(unittest.TestCase):
         
         self.assertIn('echo Hello', output)
         self.assertIn('echo Bye', output)
+
+    def test_engine_json_output(self):
+        """Test that JSON output mode produces valid JSON"""
+        rules = RuleSet([Rule(name='test', match={'cmd': 'test'}, action='echo test')])
+        engine = Engine(rules, json_output=True)
+        
+        old_stdout = sys.stdout
+        sys.stdout = StringIO()
+        
+        engine.process([{'cmd': 'test'}])
+        output = sys.stdout.getvalue()
+        
+        sys.stdout = old_stdout
+        
+        # Parse each line as JSON
+        lines = output.strip().split('\n')
+        for line in lines:
+            data = json.loads(line)
+            self.assertIn('event', data)
+        
+        # Check that we got the expected events
+        events = [json.loads(line)['event'] for line in lines]
+        self.assertIn('rule_check', events)
+        self.assertIn('action', events)
 
 
 if __name__ == '__main__':
