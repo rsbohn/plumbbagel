@@ -11,7 +11,7 @@ def main(argv: List[str] = None) -> int:
     parser.add_argument("expected")
     parsed = parser.parse_args(argv)
 
-    cmd = [sys.executable, '-m', 'plumbbagel.cli', parsed.rules, parsed.message, '--dry-run']
+    cmd = [sys.executable, '-m', 'plumbbagel', parsed.rules, parsed.message, '--dry-run']
     result = subprocess.run(cmd, capture_output=True, text=True)
 
     output = result.stdout.strip()
@@ -20,7 +20,8 @@ def main(argv: List[str] = None) -> int:
         return 0
     else:
         print("FAIL")
-        print(output)
+        print(f"Expected: {parsed.expected}")
+        print(f"Got: {output}")
         return 1
 
 

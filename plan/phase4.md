@@ -12,26 +12,26 @@ This phase introduces utilities, inspection tools, and early testing infrastruct
 
 ## Tasks
 
-- [ ] **Write `plumbaggage(1)` inspection tool**  
+- [x] **Write `plumbaggage(1)` inspection tool**  
       Reads plumb messages and reports metadata, route matches, and potential issues.  
       Can be humorous, strict, or informative depending on `--shame-level`.
 
-- [ ] **Implement logging and tracing in `plumbbagel`**  
-      Verbose output for each rule evaluation and action. Optional structured logs.
+- [x] **Implement logging and tracing in `plumbbagel`**  
+      Verbose output for each rule evaluation and action. Optional structured logs via `--json`.
 
-- [ ] **Support `--dry-run` mode**  
+- [x] **Support `--dry-run` mode**  
       Evaluate and display routing decisions without executing actions.
 
-- [ ] **Add CLI flags for testing and introspection**  
-      `--explain`, `--trace`, `--highlight`, etc.
+- [x] **Add CLI flags for testing and introspection**  
+      `--explain`, `--trace`, `--highlight`, `--json` implemented.
 
-- [ ] **Create reusable test plumb messages**  
-      Stored in `tests/messages/` or similar.
+- [x] **Create reusable test plumb messages**  
+      Stored in `tests/messages/` (hello, bye, multi-attr, error, batch).
 
-- [ ] **Add unit tests for rule evaluation**  
-      Focus on matcher logic, template expansion, fallback behavior.
+- [x] **Add unit tests for rule evaluation**  
+      25 comprehensive tests covering matcher logic, parsing, engine modes.
 
-- [ ] **Design integration test harness (`plumbtest`)**  
+- [x] **Design integration test harness (`plumbtest`)**  
       Feed message + rule + expected action into CLI, compare output.
 
 ---
@@ -53,3 +53,9 @@ This is where the tools start talking back. Think `linter meets bartender` — h
 ## Linked Issues
 
 (To be linked from GitHub or project board as created.)
+
+---
+
+## Implementation Summary
+
+All core Phase 4 tasks have been completed. See `phase4-implementation-summary.md` for details.

@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 from typing import List
 
@@ -15,6 +16,7 @@ def main(args: List[str] = None) -> int:
     parser.add_argument("--explain", action="store_true", help="Explain rule evaluation")
     parser.add_argument("--trace", action="store_true", help="Trace each rule check")
     parser.add_argument("--highlight", action="store_true", help="Highlight matches (no-op)")
+    parser.add_argument("--json", action="store_true", help="Output in JSON format")
     parsed = parser.parse_args(args)
 
     rules = RuleSet.from_file(parsed.rules)
@@ -24,17 +26,25 @@ def main(args: List[str] = None) -> int:
         verbose=parsed.verbose,
         trace=parsed.trace,
         explain=parsed.explain,
+        json_output=parsed.json,
     )
 
     if parsed.message:
-        if '=' in parsed.message or not os.path.exists(parsed.message):
-            # Wrap the message as a dict for matching rules expecting {"text": ...}
-            lines = [{"text": parsed.message.strip()}]
-        else:
+        # Check if file exists first to avoid ambiguity
+        if os.path.exists(parsed.message):
+            # Read from file
             with open(parsed.message) as fh:
-                lines = [ {"text": line.strip()} for line in fh if line.strip() ]
+                lines = [line for line in fh if line.strip()]
+        elif '=' in parsed.message:
+            # Direct message on command line
+            lines = [parsed.message]
+        else:
+            # Assume it's a file that doesn't exist - let it fail naturally
+            with open(parsed.message) as fh:
+                lines = [line for line in fh if line.strip()]
     else:
-        lines = [ {"text": line.strip()} for line in open(0) if line.strip() ]
+        # Read from stdin
+        lines = [line for line in open(0) if line.strip()]
 
     engine.process(lines)
     return 0
