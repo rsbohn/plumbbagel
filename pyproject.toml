@@ -9,6 +9,11 @@ readme = "README.md"
 requires-python = ">=3.8"
 dependencies = []
 
+[project.scripts]
+plumbbagel = "plumbbagel.cli:main"
+plumbaggage = "plumbbagel.plumbaggage:main"
+plumbtest = "plumbbagel.plumbtest:main"
+
 [tool.uv]
 # Add uv-specific configuration here if needed
 
