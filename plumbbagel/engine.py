@@ -33,11 +33,10 @@ class Engine:
             elif event_type == "no_rules_matched":
                 if self.verbose or self.explain:
                     print(f"No rule matched message {data['message']}")
-            elif event_type == "action":
-                if self.dry_run:
-                    print(f"DRY RUN: would execute '{data['action']}'")
-                else:
-                    print(data['action'])
+            elif event_type == "action_dry_run":
+                print(f"DRY RUN: would execute '{data['action']}'")
+            elif event_type == "action_executed":
+                print(data['action'])
 
     def process(self, lines: Iterable[str]):
         messages = read_messages(lines)
@@ -48,7 +47,10 @@ class Engine:
                 if rule.matches(msg):
                     matched = True
                     self._log("rule_match", rule=rule.name, message=msg.attributes, action=rule.action)
-                    self._log("action", action=rule.action, dry_run=self.dry_run)
+                    if self.dry_run:
+                        self._log("action_dry_run", action=rule.action)
+                    else:
+                        self._log("action_executed", action=rule.action)
                     break
                 else:
                     self._log("rule_no_match", rule=rule.name)

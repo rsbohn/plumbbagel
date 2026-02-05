@@ -30,11 +30,16 @@ def main(args: List[str] = None) -> int:
     )
 
     if parsed.message:
-        if '=' in parsed.message and not os.path.exists(parsed.message):
+        # Check if file exists first to avoid ambiguity
+        if os.path.exists(parsed.message):
+            # Read from file
+            with open(parsed.message) as fh:
+                lines = [line for line in fh if line.strip()]
+        elif '=' in parsed.message:
             # Direct message on command line
             lines = [parsed.message]
         else:
-            # Read from file
+            # Assume it's a file that doesn't exist - let it fail naturally
             with open(parsed.message) as fh:
                 lines = [line for line in fh if line.strip()]
     else:

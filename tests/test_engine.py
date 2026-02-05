@@ -2,9 +2,21 @@ import unittest
 from io import StringIO
 import sys
 import json
+from contextlib import contextmanager
 from plumbbagel.engine import Engine
 from plumbbagel.rules import RuleSet, Rule
 from plumbbagel.message import Message
+
+
+@contextmanager
+def captured_stdout():
+    """Context manager to safely capture stdout"""
+    old_stdout = sys.stdout
+    try:
+        sys.stdout = StringIO()
+        yield sys.stdout
+    finally:
+        sys.stdout = old_stdout
 
 
 class EngineTests(unittest.TestCase):
@@ -13,32 +25,23 @@ class EngineTests(unittest.TestCase):
         rules = RuleSet([Rule(name='test', match={'cmd': 'test'}, action='echo test')])
         engine = Engine(rules, dry_run=True)
         
-        # Capture output
-        old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        with captured_stdout() as output:
+            engine.process([{'cmd': 'test'}])
+            result = output.getvalue()
         
-        engine.process([{'cmd': 'test'}])
-        output = sys.stdout.getvalue()
-        
-        sys.stdout = old_stdout
-        
-        self.assertIn('DRY RUN', output)
-        self.assertIn('echo test', output)
+        self.assertIn('DRY RUN', result)
+        self.assertIn('echo test', result)
 
     def test_engine_verbose(self):
         """Test that verbose mode shows rule matching details"""
         rules = RuleSet([Rule(name='test', match={'cmd': 'test'}, action='echo test')])
         engine = Engine(rules, verbose=True)
         
-        old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        with captured_stdout() as output:
+            engine.process([{'cmd': 'test'}])
+            result = output.getvalue()
         
-        engine.process([{'cmd': 'test'}])
-        output = sys.stdout.getvalue()
-        
-        sys.stdout = old_stdout
-        
-        self.assertIn('matched', output.lower())
+        self.assertIn('matched', result.lower())
 
     def test_engine_trace(self):
         """Test that trace mode shows each rule check"""
@@ -48,32 +51,24 @@ class EngineTests(unittest.TestCase):
         ])
         engine = Engine(rules, trace=True, dry_run=True)
         
-        old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        with captured_stdout() as output:
+            engine.process([{'cmd': 'test'}])
+            result = output.getvalue()
         
-        engine.process([{'cmd': 'test'}])
-        output = sys.stdout.getvalue()
-        
-        sys.stdout = old_stdout
-        
-        self.assertIn("Checking rule 'first'", output)
-        self.assertIn("did not match", output)
-        self.assertIn("Checking rule 'second'", output)
+        self.assertIn("Checking rule 'first'", result)
+        self.assertIn("did not match", result)
+        self.assertIn("Checking rule 'second'", result)
 
     def test_engine_no_match(self):
         """Test behavior when no rules match"""
         rules = RuleSet([Rule(name='test', match={'cmd': 'test'}, action='echo test')])
         engine = Engine(rules, verbose=True)
         
-        old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        with captured_stdout() as output:
+            engine.process([{'cmd': 'nomatch'}])
+            result = output.getvalue()
         
-        engine.process([{'cmd': 'nomatch'}])
-        output = sys.stdout.getvalue()
-        
-        sys.stdout = old_stdout
-        
-        self.assertIn('No rule matched', output)
+        self.assertIn('No rule matched', result)
 
     def test_engine_multiple_messages(self):
         """Test processing multiple messages"""
@@ -83,32 +78,24 @@ class EngineTests(unittest.TestCase):
         ])
         engine = Engine(rules, dry_run=True)
         
-        old_stdout = sys.stdout
-        sys.stdout = StringIO()
+        with captured_stdout() as output:
+            engine.process([{'cmd': 'hello'}, {'cmd': 'bye'}])
+            result = output.getvalue()
         
-        engine.process([{'cmd': 'hello'}, {'cmd': 'bye'}])
-        output = sys.stdout.getvalue()
-        
-        sys.stdout = old_stdout
-        
-        self.assertIn('echo Hello', output)
-        self.assertIn('echo Bye', output)
+        self.assertIn('echo Hello', result)
+        self.assertIn('echo Bye', result)
 
     def test_engine_json_output(self):
-        """Test that JSON output mode produces valid JSON"""
+        """Test that JSON output mode produces valid JSON with correct event types"""
         rules = RuleSet([Rule(name='test', match={'cmd': 'test'}, action='echo test')])
-        engine = Engine(rules, json_output=True)
+        engine = Engine(rules, json_output=True, dry_run=True)
         
-        old_stdout = sys.stdout
-        sys.stdout = StringIO()
-        
-        engine.process([{'cmd': 'test'}])
-        output = sys.stdout.getvalue()
-        
-        sys.stdout = old_stdout
+        with captured_stdout() as output:
+            engine.process([{'cmd': 'test'}])
+            result = output.getvalue()
         
         # Parse each line as JSON
-        lines = output.strip().split('\n')
+        lines = result.strip().split('\n')
         for line in lines:
             data = json.loads(line)
             self.assertIn('event', data)
@@ -116,7 +103,7 @@ class EngineTests(unittest.TestCase):
         # Check that we got the expected events
         events = [json.loads(line)['event'] for line in lines]
         self.assertIn('rule_check', events)
-        self.assertIn('action', events)
+        self.assertIn('action_dry_run', events)  # Updated to check for specific dry_run event
 
 
 if __name__ == '__main__':
