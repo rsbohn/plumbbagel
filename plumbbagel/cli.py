@@ -27,14 +27,16 @@ def main(args: List[str] = None) -> int:
     )
 
     if parsed.message:
-        if '=' in parsed.message or not os.path.exists(parsed.message):
-            # Wrap the message as a dict for matching rules expecting {"text": ...}
-            lines = [{"text": parsed.message.strip()}]
+        if '=' in parsed.message and not os.path.exists(parsed.message):
+            # Direct message on command line
+            lines = [parsed.message]
         else:
+            # Read from file
             with open(parsed.message) as fh:
-                lines = [ {"text": line.strip()} for line in fh if line.strip() ]
+                lines = [line for line in fh if line.strip()]
     else:
-        lines = [ {"text": line.strip()} for line in open(0) if line.strip() ]
+        # Read from stdin
+        lines = [line for line in open(0) if line.strip()]
 
     engine.process(lines)
     return 0
