@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "create package tracking ruleset",
+    "description": null,
+    "type": "issue",
+    "status": "completed",
+    "priority": 0,
+    "created_date": "2026-02-04T21:37:23.182693",
+    "updated_date": "2026-02-04T21:37:45.418952",
+    "parent_id": null,
+    "external_source": null,
+    "external_id": null,
+    "external_url": null,
+    "external_repo": null,
+    "external_state": null,
+    "external_updated": null,
+    "external_comment": null
+  }
+]

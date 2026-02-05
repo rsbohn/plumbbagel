@@ -46,11 +46,12 @@ class Engine:
                 self._log("rule_check", rule=rule.name, message=msg.attributes)
                 if rule.matches(msg):
                     matched = True
-                    self._log("rule_match", rule=rule.name, message=msg.attributes, action=rule.action)
+                    rendered_action = rule.render_action(msg.attributes)
+                    self._log("rule_match", rule=rule.name, message=msg.attributes, action=rendered_action)
                     if self.dry_run:
-                        self._log("action_dry_run", action=rule.action)
+                        self._log("action_dry_run", action=rendered_action)
                     else:
-                        self._log("action_executed", action=rule.action)
+                        self._log("action_executed", action=rendered_action)
                     break
                 else:
                     self._log("rule_no_match", rule=rule.name)

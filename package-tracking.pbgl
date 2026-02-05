@@ -1,0 +1,39 @@
+{
+  "rules": [
+    {
+      "name": "ups_1z",
+      "match": {"tracking": "re:(?i)1Z[0-9A-Z]{16}"},
+      "action": "https://www.ups.com/track?tracknum={tracking}"
+    },
+    {
+      "name": "ups_t_code",
+      "match": {"tracking": "re:(?i)T\\d{10}"},
+      "action": "https://www.ups.com/track?tracknum={tracking}"
+    },
+    {
+      "name": "ups_9_digit",
+      "match": {"tracking": "re:\\d{9}"},
+      "action": "https://www.ups.com/track?tracknum={tracking}"
+    },
+    {
+      "name": "usps_s10",
+      "match": {"tracking": "re:(?i)[A-Z]{2}\\d{9}US"},
+      "action": "https://tools.usps.com/go/TrackConfirmAction?tLabels={tracking}"
+    },
+    {
+      "name": "usps_impb",
+      "match": {"tracking": "re:\\d{22,34}"},
+      "action": "https://tools.usps.com/go/TrackConfirmAction?tLabels={tracking}"
+    },
+    {
+      "name": "fedex_14_digit",
+      "match": {"tracking": "re:\\d{14}"},
+      "action": "https://www.fedex.com/fedextrack/?trknbr={tracking}"
+    },
+    {
+      "name": "fedex_12_digit",
+      "match": {"tracking": "re:\\d{12}"},
+      "action": "https://www.ups.com/track?tracknum={tracking}\nhttps://www.fedex.com/fedextrack/?trknbr={tracking}"
+    }
+  ]
+}
